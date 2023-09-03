@@ -47,12 +47,9 @@ func updateGameSize() {
 func newGame() *Game {
 	theGrid = make(map[XY]color.Color)
 
-	/*
-		newColor := color.RGBA{R: 255, G: 0, B: 0, A: 255}
-			theGrid[XY{X: 1, Y: 1}] = newColor
-			theGrid[XY{X: 1, Y: 2}] = newColor
-			theGrid[XY{X: 1, Y: 3}] = newColor
-	*/
+	theGrid[XY{X: 1, Y: 1}] = ColorRed
+	theGrid[XY{X: 2, Y: 1}] = ColorGreen
+	theGrid[XY{X: 3, Y: 1}] = ColorBlue
 
 	updateGameSize()
 	return &Game{}
