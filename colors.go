@@ -57,10 +57,10 @@ var (
 	ColorDarkAqua    = color.NRGBA{45, 154, 154, 255}
 )
 
-var colorList map[string]color.Color
+var colorList map[string]color.NRGBA
 
 func init() {
-	colorList = make(map[string]color.Color)
+	colorList = make(map[string]color.NRGBA)
 
 	colorList["red"] = ColorRed
 	colorList["green"] = ColorGreen

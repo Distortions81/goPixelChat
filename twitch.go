@@ -24,8 +24,8 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 		c := colorList[strings.ToLower(args[0])]
 
 		/* if color not found */
-		if c == nil {
-			c = color.White
+		if c.A == 0 {
+			c = color.NRGBA{R: 255, G: 255, B: 255, A: 255}
 		}
 
 		xpos, _ := strconv.ParseInt(args[1], 10, 16)
@@ -37,6 +37,7 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 
 		gridLock.Lock()
 		theGrid[XY{X: int(xpos), Y: int(ypos)}] = c
+		WriteDB()
 		gridLock.Unlock()
 	}
 }
