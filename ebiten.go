@@ -45,14 +45,13 @@ func updateGameSize() {
 }
 
 func newGame() *Game {
-	gridLock.Lock()
 	theGrid = make(map[XY]color.NRGBA)
-	theGrid[XY{X: 1, Y: 1}] = ColorRed
-	theGrid[XY{X: 2, Y: 1}] = ColorGreen
-	theGrid[XY{X: 3, Y: 1}] = ColorBlue
-	gridLock.Unlock()
 
 	updateGameSize()
+
+	readDB()
+	WriteDB()
+
 	return &Game{}
 }
 

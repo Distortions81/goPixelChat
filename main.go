@@ -2,6 +2,6 @@ package main
 
 func main() {
 
-	connectTwitch()
+	//connectTwitch()
 	startEbiten()
 }

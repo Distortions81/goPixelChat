@@ -3,6 +3,7 @@ package main
 import "image/color"
 
 var (
+	ColorBlack   = color.NRGBA{0, 0, 0, 0}
 	ColorRed     = color.NRGBA{203, 67, 53, 255}
 	ColorGreen   = color.NRGBA{40, 180, 99, 255}
 	ColorBlue    = color.NRGBA{41, 128, 185, 255}
@@ -62,6 +63,7 @@ var colorList map[string]color.NRGBA
 func init() {
 	colorList = make(map[string]color.NRGBA)
 
+	colorList["black"] = ColorBlack
 	colorList["red"] = ColorRed
 	colorList["green"] = ColorGreen
 	colorList["blue"] = ColorBlue
