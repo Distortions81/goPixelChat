@@ -6,6 +6,9 @@ import (
 )
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	gridLock.Lock()
+	defer gridLock.Unlock()
+
 	for pos, color := range theGrid {
 		vector.DrawFilledRect(screen, halfGrid+float32(pos.X*int(tileSize)), halfGrid+float32(pos.Y*int(tileSize)), float32(tileSize-tileBorder), float32(tileSize-tileBorder), color, false)
 	}

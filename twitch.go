@@ -31,7 +31,9 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 		xpos, _ := strconv.ParseInt(args[1], 10, 16)
 		ypos, _ := strconv.ParseInt(args[2], 10, 16)
 
+		gridLock.Lock()
 		theGrid[XY{X: int(xpos), Y: int(ypos)}] = c
+		gridLock.Unlock()
 	}
 }
 

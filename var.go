@@ -15,5 +15,6 @@ var (
 	tileSize    uint16  = gridSize - tileBorder
 	halfGrid    float32 = float32(gridSize) / 2.0
 
-	theGrid map[XY]color.Color
+	theGrid  map[XY]color.Color
+	gridLock sync.Mutex
 )
