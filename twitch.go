@@ -56,7 +56,7 @@ func connectTwitch() {
 
 	//Connect
 
-	writer.SetLogin("xboxtv81", "oauth:"+string(auth))
+	writer.SetLogin(username, "oauth:"+string(auth))
 	if err := writer.Connect(); err != nil {
 		panic("failed to start writer")
 	}
@@ -66,7 +66,7 @@ func connectTwitch() {
 	reader.OnShardLatencyUpdate(onShardLatencyUpdate)
 	reader.OnShardMessage(onShardMessage)
 
-	if err := reader.Join("xboxtv81"); err != nil {
+	if err := reader.Join(username); err != nil {
 		panic(err)
 	}
 	fmt.Println("Connected to IRC!")

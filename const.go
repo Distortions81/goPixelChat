@@ -1,8 +1,9 @@
 package main
 
 const (
-	defaultWindowWidth  = 720
-	defaultWindowHeight = 720
+	username            = "xboxtv81"
+	defaultWindowWidth  = 1080
+	defaultWindowHeight = 1080
 
 	/* Game tiles */
 	tileBorder = 2  //spacing
