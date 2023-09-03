@@ -43,21 +43,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//Connect
-	writer.SetLogin("xboxtv81", "oauth:"+string(auth))
-	if err := writer.Connect(); err != nil {
-		panic("failed to start writer")
-	}
+	if 1 == 2 {
+		//Connect
+		writer.SetLogin("xboxtv81", "oauth:"+string(auth))
+		if err := writer.Connect(); err != nil {
+			panic("failed to start writer")
+		}
 
-	reader := twitch.IRC()
-	reader.OnShardReconnect(onShardReconnect)
-	reader.OnShardLatencyUpdate(onShardLatencyUpdate)
-	reader.OnShardMessage(onShardMessage)
+		reader := twitch.IRC()
+		reader.OnShardReconnect(onShardReconnect)
+		reader.OnShardLatencyUpdate(onShardLatencyUpdate)
+		reader.OnShardMessage(onShardMessage)
 
-	if err := reader.Join("xboxtv81"); err != nil {
-		panic(err)
+		if err := reader.Join("xboxtv81"); err != nil {
+			panic(err)
+		}
+		fmt.Println("Connected to IRC!")
 	}
-	fmt.Println("Connected to IRC!")
 
 	// Set up ebiten
 	ebiten.SetVsyncEnabled(true)
@@ -96,13 +98,19 @@ func (g *Game) Update() error {
 var theGrid map[XY]color.Color
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(color.White)
 	for pos, color := range theGrid {
-		vector.DrawFilledRect(screen, halfGrid+float32(pos.X*int(tileSize)), halfGrid+float32(pos.Y*int(tileSize)), float32(boardSize*gridSize), float32(boardSize*gridSize), color, false)
+		vector.DrawFilledRect(screen, halfGrid+float32(pos.X*int(tileSize)), halfGrid+float32(pos.Y*int(tileSize)), float32(tileSize-tileBorder), float32(tileSize-tileBorder), color, false)
 	}
 }
 
 func newGame() *Game {
+	theGrid = make(map[XY]color.Color)
+	newColor := color.RGBA{R: 255, G: 0, B: 0, A: 255}
+
+	theGrid[XY{X: 1, Y: 1}] = newColor
+	theGrid[XY{X: 1, Y: 2}] = newColor
+	theGrid[XY{X: 1, Y: 3}] = newColor
+
 	updateGameSize()
 	return &Game{}
 }
