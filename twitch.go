@@ -36,7 +36,11 @@ func onShardMessage(shardID int, msg irc.ChatMessage) {
 		}
 
 		gridLock.Lock()
-		theGrid[XY{X: int(xpos), Y: int(ypos)}] = c
+		if c == ColorBlack {
+			delete(theGrid, XY{X: int(xpos), Y: int(ypos)})
+		} else {
+			theGrid[XY{X: int(xpos), Y: int(ypos)}] = c
+		}
 		WriteDB()
 		gridLock.Unlock()
 	}
