@@ -3,7 +3,7 @@ package main
 import "image/color"
 
 var (
-	ColorBlack   = color.NRGBA{0, 0, 0, 0}
+	ColorBlack   = color.NRGBA{0, 0, 0, 255}
 	ColorRed     = color.NRGBA{203, 67, 53, 255}
 	ColorGreen   = color.NRGBA{40, 180, 99, 255}
 	ColorBlue    = color.NRGBA{41, 128, 185, 255}
