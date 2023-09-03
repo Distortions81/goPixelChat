@@ -2,25 +2,48 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
+	"sync"
 	"time"
 
 	"github.com/Adeithe/go-twitch"
 	"github.com/Adeithe/go-twitch/irc"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+)
+
+const (
+	defaultWindowWidth  = 1280
+	defaultWindowHeight = 720
+
+	/* Game tiles */
+	tileBorder = 1  //1px spacing
+	boardSize  = 64 //Default board size
+
+)
+
+var (
+	ScreenWidth, ScreenHeight int
+	/* Game board values */
+	boardPixels         = boardSize * gridSize
+	gridSize    uint16  = uint16(ScreenHeight / boardSize)
+	tileSize    uint16  = gridSize - tileBorder
+	halfGrid    float32 = float32(gridSize) / 2.0
 )
 
 func main() {
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP)
-
 	writer := &irc.Conn{}
+
+	//Get aiuth
 	auth, err := os.ReadFile("auth.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	//Connect
 	writer.SetLogin("xboxtv81", "oauth:"+string(auth))
 	if err := writer.Connect(); err != nil {
 		panic("failed to start writer")
@@ -36,10 +59,22 @@ func main() {
 	}
 	fmt.Println("Connected to IRC!")
 
-	<-sc
-	fmt.Println("Stopping...")
-	reader.Close()
-	writer.Close()
+	// Set up ebiten
+	ebiten.SetVsyncEnabled(true)
+	ebiten.SetTPS(ebiten.SyncWithFPS)
+
+	/* We manaually clear, so we aren't forced to draw every frame */
+	ScreenWidth, ScreenHeight = defaultWindowWidth, defaultWindowHeight
+
+	/* Set up our window */
+	ebiten.SetWindowSize(ScreenWidth, ScreenHeight)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	ebiten.SetWindowTitle("goPixelChat")
+
+	/* Start ebiten */
+	if err := ebiten.RunGameWithOptions(newGame(), nil); err != nil {
+		return
+	}
 }
 
 func onShardReconnect(shardID int) {
@@ -52,4 +87,63 @@ func onShardLatencyUpdate(shardID int, latency time.Duration) {
 
 func onShardMessage(shardID int, msg irc.ChatMessage) {
 	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.Sender.DisplayName, msg.Text)
+}
+
+func (g *Game) Update() error {
+	return nil
+}
+
+var theGrid map[XY]color.Color
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	screen.Fill(color.White)
+	for pos, color := range theGrid {
+		vector.DrawFilledRect(screen, halfGrid+float32(pos.X*int(tileSize)), halfGrid+float32(pos.Y*int(tileSize)), float32(boardSize*gridSize), float32(boardSize*gridSize), color, false)
+	}
+}
+
+func newGame() *Game {
+	updateGameSize()
+	return &Game{}
+}
+
+/* Window size chaged, handle it */
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+
+	if outsideWidth != ScreenWidth || outsideHeight != ScreenHeight {
+
+		ScreenWidth, ScreenHeight = outsideWidth, outsideHeight
+		updateGameSize()
+	}
+
+	return ScreenWidth, ScreenHeight
+}
+
+var updateGameSizeLock sync.Mutex
+
+func updateGameSize() {
+
+	/* Resize everything for the new window size */
+	updateGameSizeLock.Lock()
+	defer updateGameSizeLock.Unlock()
+
+	gridSize = uint16(ScreenHeight / (boardSize + 1))
+	if gridSize < 3 {
+		gridSize = 3
+	}
+	tileSize = gridSize - tileBorder
+
+	boardPixels = boardSize * gridSize
+	if boardPixels < (boardSize+1)*3 {
+		boardPixels = (boardSize + 1) * 3
+	}
+	halfGrid = float32(gridSize) / 2.0
+}
+
+type Game struct {
+}
+
+type XY struct {
+	X int
+	Y int
 }
