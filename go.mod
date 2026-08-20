@@ -1,6 +1,7 @@
 module goPixelChat
 
-go 1.21.0
+go 1.26.6
+toolchain go1.26.6
 
 require (
 	github.com/Adeithe/go-twitch v0.1.3
