@@ -4,7 +4,7 @@ go 1.26.6
 
 require (
 	github.com/Adeithe/go-twitch v0.1.3
-	github.com/hajimehoshi/ebiten/v2 v2.10.3
+	github.com/hajimehoshi/ebiten/v2 v2.10.4
 )
 
 require (
